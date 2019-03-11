@@ -1,0 +1,29 @@
+Insert into Employee (name,surname,age) Values('Jarrod','G','20');
+Insert into EmployeeExtra (id,title,salary,department) Values('1','Supreme Commander','85000','HQ');
+
+Insert into Employee (name,surname,age) Values('Susan','Boyl','57');
+Insert into EmployeeExtra (id,title,salary,department) Values('2','Manager','71000','Logistics');
+
+Insert into Employee (name,surname,age) Values('Samantha','Carnagy','31');
+Insert into EmployeeExtra (id,title,salary,department) Values('3','Manager ','75000','Engineering');
+
+Insert into Employee (name,surname,age) Values('Jason','Blahowits','43');
+Insert into EmployeeExtra (id,title,salary,department) Values('4','Manager','69000','Operations');
+
+Insert into Employee (name,surname,age) Values('Kayla','Tinera','25');
+Insert into EmployeeExtra (id,title,salary,department) Values('5','Junior Coordinator','42000','Logistics');
+
+Insert into Employee (name,surname,age) Values('Robert','Geran','37');
+Insert into EmployeeExtra (id,title,salary,department) Values('6','Engineer','62000','Engineering');
+
+Insert into Employee (name,surname,age) Values('Carletta','Mason','42');
+Insert into EmployeeExtra (id,title,salary,department) Values('7','Operator','55000','Operations');
+
+Insert into Employee (name,surname,age) Values('Vin','Diesel','42');
+Insert into EmployeeExtra (id,title,salary,department) Values('8','Driver','39000','Logistics');
+
+Insert into Employee (name,surname,age) Values('Richard','McF','20');
+Insert into EmployeeExtra (id,title,salary,department) Values('9','Stategic advisor','73000','HQ');
+
+Insert into Employee (name,surname,age) Values('Operetha','Smith','57');
+Insert into EmployeeExtra (id,title,salary,department) Values('10','Stategic advisor','65000','Engineering');
