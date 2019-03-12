@@ -13,10 +13,10 @@ namespace INF354_API.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class EmployeeDBEntities : DbContext
+    public partial class EmployeeDBEntity : DbContext
     {
-        public EmployeeDBEntities()
-            : base("name=EmployeeDBEntities")
+        public EmployeeDBEntity()
+            : base("name=EmployeeDBEntity")
         {
         }
     

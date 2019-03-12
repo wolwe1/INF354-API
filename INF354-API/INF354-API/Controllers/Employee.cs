@@ -14,37 +14,63 @@ namespace INF354_API.Controllers
     public class EmployeeController : ApiController
     {
 
-        EmployeeDBEntities db = new EmployeeDBEntities();
+        EmployeeDBEntity db = new EmployeeDBEntity();
+        List<string> departments = new List<string>();
+ 
+        public List<dynamic> sortDepartments(List<dynamic> emps)
+        {
+           departments.Clear();
+            departments.Add("HQ");
+            departments.Add("Logistics");
+            departments.Add("Engineering");
+            departments.Add("Operations");
+            departments.Add("Un-assigned");
 
-        // GET api/<controller>
+            List<dynamic> sortedEmployees = new List<dynamic>(); //Simply sorts by department for nicer display
+
+            foreach (string dept in departments)
+            {
+                foreach(dynamic emp in emps)
+                {
+                    if (emp.department == dept)
+                        sortedEmployees.Add(emp);
+                }
+            }
+            return sortedEmployees;
+
+        }
         [System.Web.Http.Route("api/Employee/getAll")]
-        [System.Web.Http.HttpPost]
+        [System.Web.Http.HttpGet]
         public HttpResponseMessage getAll()
         {
             HttpResponseMessage response;
             try
             {
-
-                //Method 1 Using httpResponse
+                
                 List<Employee> employees = db.Employees.ToList();
+                List<dynamic> temp = new List<dynamic>();
                 List<dynamic> jsonReturn = new List<dynamic>();
-                List<string> JSON = new List<string>();
+                EmployeeExtra extra;
 
                 foreach (Employee emp in employees)
                 {
+                    extra = db.EmployeeExtras.Where(x => x.id == emp.id).FirstOrDefault();
+
                     dynamic obj = new ExpandoObject();
                     obj.name = emp.name;
                     obj.surname = emp.surname;
                     obj.age = emp.age;
-                    string json = JsonConvert.SerializeObject(obj);
-                    JSON.Add(json);
-                    jsonReturn.Add(obj); //for non http request mode
+                    obj.department = "Un-assigned";
+
+                    if (extra != null)
+                        obj.department = extra.department;
+
+                    temp.Add(obj); //for non http request mode
                 }
 
-                //return jsonReturn;
-                //string json = JsonConvert.SerializeObject(jsonReturn);
-                 
-                response = Request.CreateResponse(HttpStatusCode.OK,JSON);
+                jsonReturn = sortDepartments(temp);
+
+                response = Request.CreateResponse(HttpStatusCode.OK, jsonReturn);
                 response.Headers.Add("Access-Control-Allow-Origin", "*");
                 return response;    //Successful return */
 
@@ -52,19 +78,25 @@ namespace INF354_API.Controllers
             catch (Exception e)
             {
                 Trace.TraceError(e.ToString());
+                response = Request.CreateResponse(HttpStatusCode.OK, e.ToString());
+                response.Headers.Add("Access-Control-Allow-Origin", "*");
             }
-            /* response = new HttpResponseMessage(); //Empty return
-             return response; */
-            return null;
+
+            return response;
         }
 
-
         [System.Web.Http.Route("api/Employee/add")]
-        [System.Web.Http.HttpPost]
-        public bool add(string name,string surname,string age)
+        [System.Web.Http.HttpGet]
+        public HttpResponseMessage add(string name,string surname,string age)
         {
+            HttpResponseMessage failResponse = Request.CreateResponse(HttpStatusCode.OK, false);
+            failResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+
+            HttpResponseMessage successResponse = Request.CreateResponse(HttpStatusCode.OK, true);
+            successResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+
             if (name == "" || surname == "" || age == "")
-                return false;
+                return failResponse;
 
             Employee lastEmp = db.Employees.ToList().Last();
 
@@ -77,10 +109,51 @@ namespace INF354_API.Controllers
 
             db.Employees.Add(newEmployee);
             db.SaveChanges();
-            return true;
+            return successResponse;
 
         }
 
+        public HttpResponseMessage getEmployee(string name, string surname)
+        {
+            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, false);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
+
+            HttpResponseMessage failureResponse;
+            HttpResponseMessage success;
+
+            dynamic employee = new ExpandoObject();
+
+            Employee emp = db.Employees.Where(x => x.name == name && x.surname == surname).FirstOrDefault();
+
+            if(emp == null)
+            {
+                failureResponse = Request.CreateResponse(HttpStatusCode.OK, "NO EMPLOYEE MATCHES THIS DESCRIPTION");
+                failureResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+            }else
+            {
+                EmployeeExtra extra = db.EmployeeExtras.Where(xx => xx.id == emp.id).FirstOrDefault();
+
+                if(extra == null)
+                {
+                    failureResponse = Request.CreateResponse(HttpStatusCode.OK, "NO EMPLOYEE MATCHES THIS DESCRIPTION");
+                    failureResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+                }else
+                {
+                    employee.name = emp.name;
+                    employee.surname = emp.surname;
+                    employee.age = emp.age;
+                    employee.department = extra.department;
+                    employee.title = extra.title;
+                    employee.salary = extra.salary;
+
+                    string ret = JsonConvert.SerializeObject(employee);
+                    success = Request.CreateResponse(HttpStatusCode.OK,ret);
+                    success.Headers.Add("Access-Control-Allow-Origin", "*");
+                }
+            }
+            return response;
+
+        }
         // GET api/<controller>/5
         public string Get(int id)
         {

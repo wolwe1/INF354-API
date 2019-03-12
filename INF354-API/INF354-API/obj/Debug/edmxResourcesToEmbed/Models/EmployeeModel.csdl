@@ -32,7 +32,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <EntityContainer Name="EmployeeDBEntities" annotation:LazyLoadingEnabled="true">
+  <EntityContainer Name="EmployeeDBEntity" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="Employees" EntityType="Self.Employee" />
     <EntitySet Name="EmployeeExtras" EntityType="Self.EmployeeExtra" />
     <AssociationSet Name="FkId" Association="Self.FkId">
